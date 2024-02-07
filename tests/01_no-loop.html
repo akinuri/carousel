@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8" />
+    <title>01 - No Loop</title>
+    <style>
+        body {
+            overflow: hidden;
+            background-color: whitesmoke;
+        }
+        .slider {
+            width: 500px;
+            height: 100px;
+            border: 1px solid silver;
+            padding: 10px;
+            margin-inline: auto;
+            background-color: white;
+        }
+        .slider-window {
+            /* overflow: hidden; */
+        }
+        .slider-items-container {
+            display: flex;
+            gap: 10px;
+            width: fit-content;
+        }
+        .slider-item {
+            --w: 100px;
+            --bgc: silver;
+            width: var(--w);
+            height: 100px;
+            background-color: var(--bgc);
+        }
+    </style>
+</head>
+<body>
+    
+<div class="slider">
+    <div class="slider-window">
+        <div class="slider-items-container">
+            <div class="slider-item"></div>
+            <div class="slider-item" style="--w: 150px; --bgc: crimson"></div>
+            <div class="slider-item"></div>
+            <div class="slider-item" style="--w: 50px; --bgc: limegreen"></div>
+            <div class="slider-item"></div>
+            <div class="slider-item" style="--w: 250px; --bgc: dodgerblue"></div>
+            <div class="slider-item"></div>
+            <div class="slider-item" style="--w: 200px; --bgc: gold"></div>
+            <!-- <div class="slider-item"></div>
+            <div class="slider-item" style="--bgc: cyan"></div>
+            <div class="slider-item"></div>
+            <div class="slider-item" style="--bgc: magenta"></div>
+            <div class="slider-item"></div>
+            <div class="slider-item" style="--bgc: darkgray"></div>
+            <div class="slider-item"></div>
+            <div class="slider-item" style="--bgc: whitesmoke"></div> -->
+        </div>
+    </div>
+</div>
+
+<script>
+    let itemsContainer = document.querySelector(".slider-items-container");
+    
+    let mouseSensitivity = 2;
+    let moveDir = -1; // panning to right moves the world to left
+    document.addEventListener("mousemove", (e) => {
+        translateSlidesBy(e.movementX * moveDir * mouseSensitivity);
+    });
+    
+    function translateSlidesBy(value) {
+        setTranslateTo(
+            getCurrentTranslateValue() + value
+        );
+    }
+    function setTranslateTo(value) {
+        itemsContainer.style.translate = value + "px";
+    }
+    function getCurrentTranslateValue() {
+        return parseInt(getComputedStyle(itemsContainer).translate) || 0;
+    }
+</script>
+
+</body>
+</html>
