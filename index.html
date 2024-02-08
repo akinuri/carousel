@@ -48,8 +48,12 @@
 </div>
 
 <script>
-    let marksWrapper = document.querySelector(".marks-wrapper");
-    let marksContainers = document.querySelector(".marks-container");
+    let carousel = {
+        window   : document.querySelector(".marks-wrapper"),
+        platform : document.querySelector(".marks-container"),
+    };
+    carousel.windowRect = carousel.window.getBoundingClientRect();
+    carousel.platformGap = parseInt(getComputedStyle(carousel.platform).gap);
     
     buildMarks: {
         let namedMarks = {
@@ -72,70 +76,69 @@
             } else {
                 content = `<div class="mark"></div>`;
             }
-            marksContainers.innerHTML += content;
+            carousel.platform.innerHTML += content;
         }
     }
     
     // center the compass
-    marksContainers.style.translate = (marksContainers.clientWidth - marksWrapper.clientWidth) / 2 * -1 + "px";
+    carousel.platform.style.translate = (carousel.platform.clientWidth - carousel.window.clientWidth) / 2 * -1 + "px";
     
-    let wrapperRect = marksWrapper.getBoundingClientRect();
-    let flexSlideGap = 20;
-    
-    let oneLap = marksContainers.clientWidth / innerWidth;
+    let oneLap = carousel.platform.clientWidth / innerWidth;
     let mouseSensitivity = oneLap * 2;
-    let moveDir = -1; // panning to right moves the world to left
+    let rotateDir = -1; // panning to right moves the world to left
+    
     document.addEventListener("mousemove", (e) => {
-        translateSlidesBy(e.movementX * moveDir * mouseSensitivity);
+        rotatePlatformBy(e.movementX * rotateDir * mouseSensitivity);
     });
     
-    function translateSlidesBy(value) {
+    function rotatePlatformBy(value) {
         setTranslateTo(
             getCurrentTranslateValue() + value
         );
-        let slidesMoveDir = value > 0 ? "right" : "left";
-        if (slidesMoveDir == "right") {
-            if (isFirstSlideVisible()) {
-                moveSlideFromRightToLeft();
+        let platformRotateDir = value > 0 ? "right" : "left";
+        if (platformRotateDir == "right") {
+            if (isFirstItemVisible()) {
+                moveItemFromRightToLeft();
             }
         } else {
-            if (isLastSlideVisible()) {
-                moveSlideFromLeftToRight();
+            if (isLastItemVisible()) {
+                moveItemFromLeftToRight();
             }
         }
     }
+    
     function setTranslateTo(value) {
-        marksContainers.style.translate = value + "px";
+        carousel.platform.style.translate = value + "px";
     }
     function getCurrentTranslateValue() {
-        return parseInt(getComputedStyle(marksContainers).translate) || 0;
+        return parseInt(getComputedStyle(carousel.platform).translate) || 0;
     }
     
-    function isFirstSlideVisible() {
-        return isSlideVisible(marksContainers.firstElementChild);
+    function isFirstItemVisible() {
+        return isItemVisible(carousel.platform.firstElementChild);
     }
-    function isLastSlideVisible() {
-        return isSlideVisible(marksContainers.lastElementChild);
+    function isLastItemVisible() {
+        return isItemVisible(carousel.platform.lastElementChild);
     }
-    function isSlideVisible(slide) {
-        let slideRect = slide.getBoundingClientRect();
+    function isItemVisible(item) {
+        let itemRect = item.getBoundingClientRect();
         return (
-            (slideRect.right > wrapperRect.left && slideRect.left < wrapperRect.right)
+            (itemRect.right > carousel.windowRect.left && itemRect.left < carousel.windowRect.right)
             ||
-            (slideRect.left < wrapperRect.right && slideRect.right > wrapperRect.left)
+            (itemRect.left < carousel.windowRect.right && itemRect.right > carousel.windowRect.left)
         );
     }
     
-    function moveSlideFromRightToLeft() {
-        let offset = marksContainers.lastElementChild.clientWidth + flexSlideGap;
+    function moveItemFromRightToLeft() {
+        let offset = carousel.platform.lastElementChild.clientWidth + carousel.platformGap;
         let newTransX = getCurrentTranslateValue() - offset;
-        marksContainers.prepend(marksContainers.lastElementChild);
+        carousel.platform.prepend(carousel.platform.lastElementChild);
         setTranslateTo(newTransX);
     }
-    function moveSlideFromLeftToRight() {
-        let offset = marksContainers.firstElementChild.clientWidth + flexSlideGap;
+    function moveItemFromLeftToRight() {
+        let offset = carousel.platform.firstElementChild.clientWidth + carousel.platformGap;
         let newTransX = getCurrentTranslateValue() + offset;
-        marksContainers.append(marksContainers.firstElementChild);
+        carousel.platform.append(carousel.platform.firstElementChild);
         setTranslateTo(newTransX);
     }
 </script>

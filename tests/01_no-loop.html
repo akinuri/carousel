@@ -8,7 +8,7 @@
             overflow: hidden;
             background-color: whitesmoke;
         }
-        .slider {
+        .carousel {
             width: 500px;
             height: 100px;
             border: 1px solid silver;
@@ -16,15 +16,15 @@
             margin-inline: auto;
             background-color: white;
         }
-        .slider-window {
+        .carousel-window {
             /* overflow: hidden; */
         }
-        .slider-items-container {
+        .carousel-platform {
             display: flex;
             gap: 10px;
             width: fit-content;
         }
-        .slider-item {
+        .carousel-platform > * {
             --w: 100px;
             --bgc: silver;
             width: var(--w);
@@ -34,49 +34,54 @@
     </style>
 </head>
 <body>
-    
-<div class="slider">
-    <div class="slider-window">
-        <div class="slider-items-container">
-            <div class="slider-item"></div>
-            <div class="slider-item" style="--w: 150px; --bgc: crimson"></div>
-            <div class="slider-item"></div>
-            <div class="slider-item" style="--w: 50px; --bgc: limegreen"></div>
-            <div class="slider-item"></div>
-            <div class="slider-item" style="--w: 250px; --bgc: dodgerblue"></div>
-            <div class="slider-item"></div>
-            <div class="slider-item" style="--w: 200px; --bgc: gold"></div>
-            <!-- <div class="slider-item"></div>
-            <div class="slider-item" style="--bgc: cyan"></div>
-            <div class="slider-item"></div>
-            <div class="slider-item" style="--bgc: magenta"></div>
-            <div class="slider-item"></div>
-            <div class="slider-item" style="--bgc: darkgray"></div>
-            <div class="slider-item"></div>
-            <div class="slider-item" style="--bgc: whitesmoke"></div> -->
+
+<div class="carousel">
+    <div class="carousel-window">
+        <div class="carousel-platform">
+            <div></div>
+            <div style="--w: 150px; --bgc: crimson"></div>
+            <div></div>
+            <div style="--w: 50px; --bgc: limegreen"></div>
+            <div></div>
+            <div style="--w: 250px; --bgc: dodgerblue"></div>
+            <div></div>
+            <div style="--w: 200px; --bgc: gold"></div>
+            <!-- <div></div>
+            <div style="--bgc: cyan"></div>
+            <div></div>
+            <div style="--bgc: magenta"></div>
+            <div></div>
+            <div style="--bgc: darkgray"></div>
+            <div></div>
+            <div style="--bgc: whitesmoke"></div> -->
         </div>
     </div>
 </div>
 
 <script>
-    let itemsContainer = document.querySelector(".slider-items-container");
+    let carousel = {
+        platform : document.querySelector(".carousel-platform"),
+    };
     
-    let mouseSensitivity = 2;
-    let moveDir = -1; // panning to right moves the world to left
+    let oneLap = carousel.platform.clientWidth / innerWidth;
+    let mouseSensitivity = oneLap * 2;
+    let rotateDir = -1; // panning to right moves the world to left
+    
     document.addEventListener("mousemove", (e) => {
-        translateSlidesBy(e.movementX * moveDir * mouseSensitivity);
+        rotatePlatformBy(e.movementX * rotateDir * mouseSensitivity);
     });
     
-    function translateSlidesBy(value) {
+    function rotatePlatformBy(value) {
         setTranslateTo(
             getCurrentTranslateValue() + value
         );
     }
+    
     function setTranslateTo(value) {
-        itemsContainer.style.translate = value + "px";
+        carousel.platform.style.translate = value + "px";
     }
     function getCurrentTranslateValue() {
-        return parseInt(getComputedStyle(itemsContainer).translate) || 0;
+        return parseInt(getComputedStyle(carousel.platform).translate) || 0;
     }
 </script>
 
