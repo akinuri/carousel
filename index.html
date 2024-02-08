@@ -79,8 +79,11 @@
     // center the compass
     marksContainers.style.translate = (marksContainers.clientWidth - marksWrapper.clientWidth) / 2 * -1 + "px";
     
+    let wrapperRect = marksWrapper.getBoundingClientRect();
+    let flexSlideGap = 20;
+    
     let oneLap = marksContainers.clientWidth / innerWidth;
-    let mouseSensitivity = oneLap * 1.25;
+    let mouseSensitivity = oneLap * 2;
     let moveDir = -1; // panning to right moves the world to left
     document.addEventListener("mousemove", (e) => {
         translateSlidesBy(e.movementX * moveDir * mouseSensitivity);
@@ -90,12 +93,50 @@
         setTranslateTo(
             getCurrentTranslateValue() + value
         );
+        let slidesMoveDir = value > 0 ? "right" : "left";
+        if (slidesMoveDir == "right") {
+            if (isFirstSlideVisible()) {
+                moveSlideFromRightToLeft();
+            }
+        } else {
+            if (isLastSlideVisible()) {
+                moveSlideFromLeftToRight();
+            }
+        }
     }
     function setTranslateTo(value) {
         marksContainers.style.translate = value + "px";
     }
     function getCurrentTranslateValue() {
         return parseInt(getComputedStyle(marksContainers).translate) || 0;
+    }
+    
+    function isFirstSlideVisible() {
+        return isSlideVisible(marksContainers.firstElementChild);
+    }
+    function isLastSlideVisible() {
+        return isSlideVisible(marksContainers.lastElementChild);
+    }
+    function isSlideVisible(slide) {
+        let slideRect = slide.getBoundingClientRect();
+        return (
+            (slideRect.right > wrapperRect.left && slideRect.left < wrapperRect.right)
+            ||
+            (slideRect.left < wrapperRect.right && slideRect.right > wrapperRect.left)
+        );
+    }
+    
+    function moveSlideFromRightToLeft() {
+        let offset = marksContainers.lastElementChild.clientWidth + flexSlideGap;
+        let newTransX = getCurrentTranslateValue() - offset;
+        marksContainers.prepend(marksContainers.lastElementChild);
+        setTranslateTo(newTransX);
+    }
+    function moveSlideFromLeftToRight() {
+        let offset = marksContainers.firstElementChild.clientWidth + flexSlideGap;
+        let newTransX = getCurrentTranslateValue() + offset;
+        marksContainers.append(marksContainers.firstElementChild);
+        setTranslateTo(newTransX);
     }
 </script>
 
