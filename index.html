@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8" />
+    <title>Horizontal Compass</title>
+    <style>
+        body {
+            overflow: hidden;
+            background-color: whitesmoke;
+            font-family: system-ui, sans-serif;
+        }
+        .compass {
+            width: 500px;
+            position: fixed;
+            left: 50%;
+            top: 30px;
+            translate: -50% 0;
+            padding: 10px;
+            border: 1px dashed silver;
+            user-select: none;
+        }
+        .compass .marks-wrapper {
+            /* overflow: hidden; */
+        }
+        .compass .marks-container {
+            display: flex;
+            gap: 20px;
+            width: fit-content;
+            align-items: center;
+        }
+        .compass .marks-container .mark {
+            height: 10px;
+            width: 2px;
+            background-color: black;
+        }
+        .compass .marks-container .angle {
+            color: black;
+            line-height: 1;
+        }
+    </style>
+</head>
+<body>
+    
+<div class="compass">
+    <div class="marks-wrapper">
+        <div class="marks-container"></div>
+    </div>
+</div>
+
+<script>
+    let marksWrapper = document.querySelector(".marks-wrapper");
+    let marksContainers = document.querySelector(".marks-container");
+    
+    buildMarks: {
+        let namedMarks = {
+            "0" : "N",
+            "45" : "NE",
+            "90" : "E",
+            "225" : "SE",
+            "180" : "S",
+            "225" : "SW",
+            "270" : "W",
+            "315" : "NW",
+        };
+        let namedMarksAngles = Object.keys(namedMarks).map(value => parseInt(value));
+        for (let index = 0; index < 360; index += 2.5) {
+            let content = null;
+            if (namedMarksAngles.includes(index)) {
+                content = `<div class="angle">${namedMarks[index]}</div>`;
+            } else if (index % 15 == 0) {
+                content = `<div class="angle">${index}</div>`;
+            } else {
+                content = `<div class="mark"></div>`;
+            }
+            marksContainers.innerHTML += content;
+        }
+    }
+    
+    // center the compass
+    marksContainers.style.translate = (marksContainers.clientWidth - marksWrapper.clientWidth) / 2 * -1 + "px";
+    
+    let oneLap = marksContainers.clientWidth / innerWidth;
+    let mouseSensitivity = oneLap * 1.25;
+    let moveDir = -1; // panning to right moves the world to left
+    document.addEventListener("mousemove", (e) => {
+        translateSlidesBy(e.movementX * moveDir * mouseSensitivity);
+    });
+    
+    function translateSlidesBy(value) {
+        setTranslateTo(
+            getCurrentTranslateValue() + value
+        );
+    }
+    function setTranslateTo(value) {
+        marksContainers.style.translate = value + "px";
+    }
+    function getCurrentTranslateValue() {
+        return parseInt(getComputedStyle(marksContainers).translate) || 0;
+    }
+</script>
+
+</body>
+</html>
