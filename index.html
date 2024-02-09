@@ -36,6 +36,20 @@
         .compass .marks-container .angle {
             color: black;
             line-height: 1;
+            font-size: 1.2rem;
+            margin-top: -1px;
+        }
+        .compass .marks-container .north {
+            color: crimson;
+            font-weight: 500;
+            font-size: 1.5rem;
+            margin-top: -2px;
+        }
+        .compass .marks-container .south {
+            color: dodgerblue;
+            font-weight: 500;
+            font-size: 1.5rem;
+            margin-top: -2px;
         }
     </style>
 </head>
@@ -70,7 +84,12 @@
         for (let index = 0; index < 360; index += 2.5) {
             let content = null;
             if (namedMarksAngles.includes(index)) {
-                content = `<div class="angle">${namedMarks[index]}</div>`;
+                let cls = index == 0
+                    ? " north"
+                    : index == 180
+                        ? " south"
+                        : "";
+                content = `<div class="angle${cls}">${namedMarks[index]}</div>`;
             } else if (index % 15 == 0) {
                 content = `<div class="angle">${index}</div>`;
             } else {
