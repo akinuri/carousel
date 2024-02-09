@@ -2,105 +2,69 @@
 <html>
 <head>
     <meta charset="UTF-8" />
-    <title>Horizontal Compass</title>
+    <title>02 - Infinite Loop</title>
     <style>
         body {
             overflow: hidden;
             background-color: whitesmoke;
-            font-family: system-ui, sans-serif;
         }
-        .compass {
+        .carousel {
             width: 500px;
-            position: fixed;
-            left: 50%;
-            top: 30px;
-            translate: -50% 0;
+            height: 100px;
+            border: 1px solid silver;
             padding: 10px;
-            border: 1px dashed silver;
-            user-select: none;
+            margin-inline: auto;
+            background-color: white;
         }
-        .compass .marks-wrapper {
+        .carousel-window {
             /* overflow: hidden; */
         }
-        .compass .marks-container {
+        .carousel-platform {
             display: flex;
-            gap: 20px;
+            gap: 10px;
             width: fit-content;
-            align-items: center;
         }
-        .compass .marks-container .mark {
-            height: 10px;
-            width: 2px;
-            background-color: black;
-        }
-        .compass .marks-container .angle {
-            color: black;
-            line-height: 1;
-            font-size: 1.2rem;
-            margin-top: -1px;
-        }
-        .compass .marks-container .north {
-            color: crimson;
-            font-weight: 500;
-            font-size: 1.5rem;
-            margin-top: -2px;
-        }
-        .compass .marks-container .south {
-            color: dodgerblue;
-            font-weight: 500;
-            font-size: 1.5rem;
-            margin-top: -2px;
+        .carousel-platform > * {
+            --w: 100px;
+            --bgc: silver;
+            width: var(--w);
+            height: 100px;
+            background-color: var(--bgc);
         }
     </style>
 </head>
 <body>
     
-<div class="compass">
-    <div class="marks-wrapper">
-        <div class="marks-container"></div>
+<div class="carousel">
+    <div class="carousel-window">
+        <div class="carousel-platform">
+            <div></div>
+            <div style="--w: 150px; --bgc: crimson"></div>
+            <div></div>
+            <div style="--w: 50px; --bgc: limegreen"></div>
+            <div></div>
+            <div style="--w: 250px; --bgc: dodgerblue"></div>
+            <div></div>
+            <div style="--w: 200px; --bgc: gold"></div>
+            <!-- <div></div>
+            <div style="--bgc: cyan"></div>
+            <div></div>
+            <div style="--bgc: magenta"></div>
+            <div></div>
+            <div style="--bgc: darkgray"></div>
+            <div></div>
+            <div style="--bgc: whitesmoke"></div> -->
+        </div>
     </div>
 </div>
 
 <script>
     let carousel = {
-        window   : document.querySelector(".marks-wrapper"),
-        platform : document.querySelector(".marks-container"),
+        window   : document.querySelector(".carousel-window"),
+        platform : document.querySelector(".carousel-platform"),
     };
     carousel.windowRect = carousel.window.getBoundingClientRect();
     carousel.platformGap = parseInt(getComputedStyle(carousel.platform).gap);
-    
-    buildMarks: {
-        let namedMarks = {
-            "0" : "N",
-            "45" : "NE",
-            "90" : "E",
-            "225" : "SE",
-            "180" : "S",
-            "225" : "SW",
-            "270" : "W",
-            "315" : "NW",
-        };
-        let namedMarksAngles = Object.keys(namedMarks).map(value => parseInt(value));
-        for (let index = 0; index < 360; index += 2.5) {
-            let content = null;
-            if (namedMarksAngles.includes(index)) {
-                let cls = index == 0
-                    ? " north"
-                    : index == 180
-                        ? " south"
-                        : "";
-                content = `<div class="angle${cls}">${namedMarks[index]}</div>`;
-            } else if (index % 15 == 0) {
-                content = `<div class="angle">${index}</div>`;
-            } else {
-                content = `<div class="mark"></div>`;
-            }
-            carousel.platform.innerHTML += content;
-        }
-    }
-    
-    // center the compass
-    carousel.platform.style.translate = (carousel.platform.clientWidth - carousel.window.clientWidth) / 2 * -1 + "px";
     
     let oneLap = carousel.platform.clientWidth / innerWidth;
     let mouseSensitivity = oneLap * 2;
